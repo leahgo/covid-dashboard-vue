@@ -6,23 +6,21 @@ import * as wjcChart from '@grapecity/wijmo.chart'
 export default {
   name: 'Main',
   props: {
-    // palette: {
-    //   type: Array,
-    //   default () {
-    //     return [
-    //       'rgba(227, 65, 96, .8)',
-    //       'rgba(32, 208, 191, .8)',
-    //       'rgba(47, 141, 250, .8)',
-    //       'rgba(248, 199, 83, .8)',
-    //       'rgba(236, 126, 48, .8)',
-    //       'rgba(26, 168, 121, .8)',
-    //       'rgba(21, 83, 182, .8)',
-    //       'rgba(189, 65, 227, .8)',
-    //       'rgba(204, 145, 124, .8)',
-    //       'rgba(81, 109, 136, .8)'
-    //     ]
-    //   }
-    // }
+    palette: {
+      type: Array,
+      default () {
+        return [
+          'rgba(32, 208, 191, .5)',
+          'rgba(47, 141, 250, .8)',
+          'rgba(26, 168, 121, .8)',
+          'rgba(21, 83, 182, .8)',
+          // 'rgba(227, 65, 96, .8)',
+          // 'rgba(248, 199, 83, .8)',
+          // 'rgba(236, 126, 48, .8)',
+          'rgba(189, 65, 227, .8)'
+        ]
+      }
+    }
   },
   async mounted () {
 
@@ -59,6 +57,10 @@ export default {
         return a.createDt < b.createDt ? -1 : a.createDt > b.createDt ? 1 : 0
       })
 
+      this.data.map(data => {
+        data.createDt = dayjs(data.createDt).format('YYYY-MM-DD')
+      })
+
       return response.data === null ? [] : response.data
     } catch (error) {
       console.log(error)
@@ -69,10 +71,13 @@ export default {
     initChart (chart) {
       this.mainChart = chart
 
+      this.mainChart.axisX.labelAngle = 0
+
       this.mainChart.beginUpdate()
       let series_decideCnt = new wjcChart.Series()
       series_decideCnt.name = '확진자 수'
       series_decideCnt.binding = 'decideCnt'
+      series_decideCnt.chartType = 'Area'
       this.mainChart.series.push(series_decideCnt)
 
       let series_clearCnt = new wjcChart.Series()
@@ -100,7 +105,11 @@ export default {
   },
   data () {
     return {
-      data: []
+      data: [],
+      range: {
+        start: new Date(2020, 9, 12),
+        end: new Date(2020, 9, 16),
+      }
     }
   }
 }
