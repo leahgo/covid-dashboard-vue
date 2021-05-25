@@ -7,6 +7,7 @@ module.exports = {
         "changeOrigin": true,
         "secure": false
       }
-    }
+    },
+    publicPath: process.env.NODE_ENV === 'production' ? '/covid-dashboard-vue/' : '/'
   },
 }
