@@ -60,7 +60,7 @@ export default {
       this.mainChart.endUpdate()
     },
     onClickBtn () {
-      console.log(dayjs(this.range.start).format('YYYYMMDD'), dayjs(this.range.end).format('YYYYMMDD'))
+      // console.log(dayjs(this.range.start).format('YYYYMMDD'), dayjs(this.range.end).format('YYYYMMDD'))
       this.startCreateDt = dayjs(this.range.start).format('YYYYMMDD')
       this.endCreateDt = dayjs(this.range.end).format('YYYYMMDD')
       this.searchProcess()
