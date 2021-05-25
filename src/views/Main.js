@@ -67,7 +67,7 @@ export default {
     },
     async searchProcess () {
       const url =
-        "/openapi/service/rest/Covid19/getCovid19InfStateJson"
+        "http://openapi.data.go.kr/openapi/service/rest/Covid19/getCovid19InfStateJson"
       const ServiceKey =
         "pazBdlMEQ8jBn1ovS4UfBWEMzypVRd5jPd887GygCIAQWJYJWbzAcAn3w5jaYyPN3lwpX69kUb6dl3rbeMgAww%3D%3D"
 
