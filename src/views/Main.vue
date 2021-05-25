@@ -26,6 +26,13 @@
             </div>
           </template>
         </v-date-picker>
+        <b-button
+          type="is-primary"
+          class="btn-search"
+          @click="onClickBtn"
+        >
+          Search
+        </b-button>
       </div>
       <div class="div-chart">
         <wj-flex-chart
@@ -38,6 +45,48 @@
           chart-type="Line"
           :palette="palette"
         />
+        <div class="div-checkbox">
+          <b-field>
+            <b-checkbox
+              v-model="isDecideCnt"
+              @input="onClickCheckbox"
+            >
+              확진자 수
+            </b-checkbox>
+          </b-field>
+          <b-field>
+            <b-checkbox
+              v-model="isClearCnt"
+              @input="onClickCheckbox"
+            >
+              격리해제 수
+            </b-checkbox>
+          </b-field>
+          <b-field>
+            <b-checkbox
+              v-model="isExamCnt"
+              @input="onClickCheckbox"
+            >
+              검사진행 수
+            </b-checkbox>
+          </b-field>
+          <b-field>
+            <b-checkbox
+              v-model="isDeathCnt"
+              @input="onClickCheckbox"
+            >
+              사망자 수
+            </b-checkbox>
+          </b-field>
+          <b-field>
+            <b-checkbox
+              v-model="isCareCnt"
+              @input="onClickCheckbox"
+            >
+              치료중 환자 수
+            </b-checkbox>
+          </b-field>
+        </div>
       </div>
     </div>
   </div>

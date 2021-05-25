@@ -22,56 +22,12 @@ export default {
       }
     }
   },
-  async mounted () {
-
-    const url =
-      "/openapi/service/rest/Covid19/getCovid19InfStateJson"
-    const ServiceKey =
-      "pazBdlMEQ8jBn1ovS4UfBWEMzypVRd5jPd887GygCIAQWJYJWbzAcAn3w5jaYyPN3lwpX69kUb6dl3rbeMgAww%3D%3D"
-
-    let startDt = '20210101'
-    let endDt = '20210521'
-    let pageNo = "1";
-    let numOfRows = "10";
-    let startCreateDt = dayjs(startDt).format("YYYYMMDD");
-    let endCreateDt = dayjs(endDt).format("YYYYMMDD");
-
-    try {
-      let response = await axios.get(
-        url +
-        "?ServiceKey=" +
-        ServiceKey +
-        "&pageNo=" +
-        pageNo +
-        "&numOfRows=" +
-        numOfRows +
-        "&startCreateDt=" +
-        startCreateDt +
-        "&endCreateDt=" +
-        endCreateDt,
-      )
-      this.data = response.data.response.body.items.item
-
-      // 날짜 순으로 정렬
-      this.data.sort((a, b) => {
-        return a.createDt < b.createDt ? -1 : a.createDt > b.createDt ? 1 : 0
-      })
-
-      this.data.map(data => {
-        data.createDt = dayjs(data.createDt).format('YYYY-MM-DD')
-      })
-
-      return response.data === null ? [] : response.data
-    } catch (error) {
-      console.log(error)
-    }
-
-  },
   methods: {
     initChart (chart) {
       this.mainChart = chart
 
       this.mainChart.axisX.labelAngle = 0
+      this.mainChart.legend.position = 'Bottom'
 
       this.mainChart.beginUpdate()
       let series_decideCnt = new wjcChart.Series()
@@ -93,23 +49,84 @@ export default {
       let series_deathCnt = new wjcChart.Series()
       series_deathCnt.name = '사망자 수'
       series_deathCnt.binding = 'deathCnt'
+      series_deathCnt.chartType = 'Bar'
       this.mainChart.series.push(series_deathCnt)
 
       let series_careCnt = new wjcChart.Series()
       series_careCnt.name = '치료중 환자 수'
-      series_careCnt.binding = 'examCnt'
+      series_careCnt.binding = 'careCnt'
       this.mainChart.series.push(series_careCnt)
 
       this.mainChart.endUpdate()
+    },
+    onClickBtn () {
+      console.log(dayjs(this.range.start).format('YYYYMMDD'), dayjs(this.range.end).format('YYYYMMDD'))
+      this.startCreateDt = dayjs(this.range.start).format('YYYYMMDD')
+      this.endCreateDt = dayjs(this.range.end).format('YYYYMMDD')
+      this.searchProcess()
+    },
+    async searchProcess () {
+      const url =
+        "http://openapi.data.go.kr/openapi/service/rest/Covid19/getCovid19InfStateJson"
+      const ServiceKey =
+        "pazBdlMEQ8jBn1ovS4UfBWEMzypVRd5jPd887GygCIAQWJYJWbzAcAn3w5jaYyPN3lwpX69kUb6dl3rbeMgAww%3D%3D"
+
+      let pageNo = "1";
+      let numOfRows = "10";
+
+      try {
+        let response = await axios.get(
+          url +
+          "?ServiceKey=" +
+          ServiceKey +
+          "&pageNo=" +
+          pageNo +
+          "&numOfRows=" +
+          numOfRows +
+          "&startCreateDt=" +
+          this.startCreateDt +
+          "&endCreateDt=" +
+          this.endCreateDt,
+        )
+        this.data = response.data.response.body.items.item
+
+        // 날짜 순으로 정렬
+        this.data.sort((a, b) => {
+          return a.createDt < b.createDt ? -1 : a.createDt > b.createDt ? 1 : 0
+        })
+
+        this.data.map(data => {
+          data.createDt = dayjs(data.createDt).format('YYYY-MM-DD')
+        })
+
+        return response.data === null ? [] : response.data
+      } catch (error) {
+        console.log(error)
+      }
+
+    },
+    onClickCheckbox () {
+      this.mainChart.series[0].visibility = this.isDecideCnt === true ? 0 : 3
+      this.mainChart.series[1].visibility = this.isClearCnt === true ? 0 : 3
+      this.mainChart.series[2].visibility = this.isExamCnt === true ? 0 : 3
+      this.mainChart.series[3].visibility = this.isDeathCnt === true ? 0 : 3
+      this.mainChart.series[4].visibility = this.isCareCnt === true ? 0 : 3
     }
   },
   data () {
     return {
       data: [],
       range: {
-        start: new Date(2020, 9, 12),
-        end: new Date(2020, 9, 16),
-      }
+        start: new Date().getTime() - (7 * 24 * 60 * 60 * 1000), // 7일 전
+        end: new Date(),
+      },
+      startCreateDt: null,
+      endCreateDt: null,
+      isDecideCnt: true,
+      isClearCnt: true,
+      isExamCnt: true,
+      isDeathCnt: true,
+      isCareCnt: true
     }
   }
 }
