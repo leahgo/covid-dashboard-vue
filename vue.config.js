@@ -1,7 +1,7 @@
 module.exports = {
   devServer: {
     proxy: {
-      '/': {
+      '/openapi': {
         "target": 'http://openapi.data.go.kr',
         "pathRewrite": { '^/': '' },
         "changeOrigin": true,
